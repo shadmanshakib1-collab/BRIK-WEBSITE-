@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content="BRIK — Creative Studio specializing in Graphics, UI/UX, Photography, and A.I." />
+    <title>BRIK | Creative Studio</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90' font-family='Poppins'%3EB%3C/text%3E%3C/svg%3E" />
+    <!-- SEO & Social -->
+    <meta property="og:title" content="BRIK | Creative Studio">
+    <meta property="og:description" content="Building An Era — Graphics, UI/UX, Photography, A.I.">
+    <meta property="og:image" content="https://brik.studio/og-image.jpg">
+    <meta property="og:url" content="https://brik.studio">
+    <meta name="twitter:card" content="summary_large_image">
+    <!-- Preload Critical Assets -->
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" as="style">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" as="script">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;900&display=swap" rel="stylesheet"/>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { poppins: ['Poppins', 'sans-serif'] },
+                    colors: {
+                        midnight: '#0f0f1a',
+                        deep: '#12121e',
+                        void: '#0a0a14',
+                        frost: 'rgba(255, 255, 255, 0.05)',
+                    },
+                }
+            }
+        }
+    </script>
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+    <style>
+        body { font-weight: 300; background: #0f0f1a; }
+   
+        /* Glassmorphism */
+        .glass {
+            background: rgba(15, 15, 26, 0.35);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.37), inset 0 1px 0 rgba(255,255,255,0.08);
+            position: relative;
+            border-radius: inherit;
+        }
+        .glass::before {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+            pointer-events: none; border-radius: inherit;
+        }
+        .glass-hover:hover {
+            background: rgba(20, 20, 35, 0.45);
+            border-color: rgba(255,255,255,0.15);
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.12), 0 0 30px rgba(255,255,255,0.15);
+        }
+   
+        /* Hero Overlay */
+        .hero-overlay {
+            @apply absolute inset-0;
+        }
+        .hero-overlay::before {
+            content: '';
+            background: linear-gradient(to bottom, rgba(0,0,0,0.9), rgba(0,0,0,0.7) 50%, #12121e 100%);
+        }
+   
+        /* Service Button Shine */
+        .service-btn {
+            @apply relative overflow-hidden font-medium text-sm md:text-base tracking-wider transition-all duration-500 whitespace-normal max-w-xs mx-auto leading-snug;
+        }
+        .service-btn::after {
+            content: ''; position: absolute; top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.6s;
+        }
+        .service-btn:hover::after { left: 100%; }
+   
+        /* Slide Frost Effect */
+        .slide-frost::after {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(circle at center, rgba(15,15,26,0.2), rgba(10,10,20,0.6) 70%);
+            backdrop-filter: blur(4px); pointer-events: none;
+            opacity: 0; transition: opacity 1.2s ease;
+        }
+        .swiper-slide-active .slide-frost::after { opacity: 1; }
+   
+        /* Pagination */
+        .swiper-pagination-bullet {
+            background: rgba(255,255,255,0.2);
+            width: 10px !important;
+            height: 10px !important;
+            opacity: 0.6;
+        }
+        .swiper-pagination-bullet-active {
+            background: #fff; opacity: 1; transform: scale(1.4);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1.4); }
+            50% { transform: scale(1.6); }
+        }
+   
+        /* === Full-Viewport Scroll Snap === */
+        .scroll-container {
+            scroll-snap-type: y mandatory;
+            overflow-y: auto;
+            height: 100vh;
+            scroll-behavior: smooth;
+        }
+        .snap-section {
+            scroll-snap-align: start;
+            height: 100vh;
+        }
+        /* Glass Nav */
+        .glass-nav {
+            position: fixed; top: 0; left: 0; width: 100%; padding: 1.8rem 5vw;
+            display: flex; justify-content: space-between; align-items: center; z-index: 100;
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            background: rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.08);
+            transition: all 0.4s ease;
+        }
+        .glass-nav.scrolled {
+            padding: 1.2rem 5vw; background: rgba(255,255,255,0.09);
+        }
+        .nav-logo {
+            font-weight: 100; font-size: 1.4rem; letter-spacing: 0.25em; color: #fff; text-transform: uppercase;
+        }
+        .nav-links {
+            display: flex; gap: 3.2rem;
+        }
+        .nav-links a {
+            font-weight: 200; font-size: 0.88rem; letter-spacing: 0.18em; color: rgba(255,255,255,0.9);
+            text-decoration: none; text-transform: uppercase; position: relative; transition: color 0.3s ease;
+        }
+        .nav-links a[aria-current="page"] {
+            color: #fff;
+        }
+        .nav-links a::after {
+            content: ''; position: absolute; bottom: -6px; left: 0; width: 0; height: 1px;
+            background: #fff; transition: width 0.4s ease;
+        }
+        .nav-links a:hover::after,
+        .nav-links a[aria-current="page"]::after {
+            width: 100%;
+        }
+        /* About Section */
+        .about-section {
+            position: relative; width: 100%; height: 100vh;
+            background: url('https://images.pexels.com/photos/27799707/pexels-photo-27799707.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2') center/cover no-repeat;
+            display: flex; align-items: center; justify-content: center; overflow: hidden;
+        }
+        .about-section::before {
+            content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.48); z-index: 1;
+        }
+        .about-text {
+            position: relative; z-index: 2; max-width: 780px; padding: 0 3rem;
+            font-weight: 100; font-size: 1.05rem; line-height: 1.85; letter-spacing: 0.06em;
+            color: rgba(255,255,255,0.92); text-align: center;
+        }
+        .highlight {
+            position: relative; display: inline; color: #fff; transition: all 0.5s ease; cursor: default;
+        }
+        .highlight::after {
+            content: ''; position: absolute; bottom: 2px; left: 0; width: 0; height: 1px;
+            background: #fff; transition: width 0.6s ease;
+        }
+        .highlight:hover {
+            color: #fff; text-shadow: 0 0 12px rgba(255,255,255,0.4);
+        }
+        .highlight:hover::after { width: 100%; }
+        /* Why BRIK Section */
+        .why-section {
+            position: relative; width: 100%; height: 100vh;
+            background: url('https://images.pexels.com/photos/27799708/pexels-photo-27799708.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2') center/cover no-repeat;
+            display: flex; align-items: center; justify-content: center; overflow: hidden;
+        }
+        .why-section::before {
+            content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.52); z-index: 1;
+        }
+        .why-text {
+            position: relative; z-index: 2; max-width: 820px; padding: 0 3rem;
+            font-weight: 100; font-size: 1.05rem; line-height: 1.85; letter-spacing: 0.06em;
+            color: rgba(255,255,255,0.92); text-align: center;
+        }
+        /* Brand Page */
+        .brand-page {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            background: center/cover no-repeat;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .brand-page::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 1;
+        }
+        .brand-text {
+            position: relative;
+            z-index: 2;
+            font-weight: 100;
+            font-size: 8vw;
+            letter-spacing: 0.42em;
+            color: #fff;
+            text-align: center;
+            text-transform: uppercase;
+        }
+        /* === SHOWCASE SECTION (UPDATED) === */
+        .showcase {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+        }
+        .slides-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+        }
+        .slides-container {
+            display: flex;
+            width: 700vw;
+            height: 100%;
+            transition: transform 1.6s cubic-bezier(0.22, 0.61, 0.24, 1);
+            will-change: transform;
+        }
+        .slide {
+            position: relative;
+            min-width: 100vw;
+            height: 100%;
+            background: center/cover no-repeat;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .slide::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1;
+            transition: background 1s ease;
+        }
+        .slide.active::before {
+            background: rgba(0, 0, 0, 0.38);
+        }
+        .slide-title {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 3;
+            font-weight: 100;
+            font-size: 4.8vw;
+            letter-spacing: 0.32em;
+            text-transform: uppercase;
+            text-align: center;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 1.4s ease 0.4s, transform 1.4s cubic-bezier(0.22, 0.61, 0.24, 1);
+            transform: translate(-50%, -40%);
+        }
+        .slide.active .slide-title {
+            opacity: 1;
+            transform: translate(-50%, -50%);
+        }
+        .showcase-indicator {
+            position: absolute;
+            bottom: 5vh;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+            z-index: 10;
+            padding: 8px 16px;
+            background: rgba(15, 15, 26, 0.3);
+            backdrop-filter: blur(8px);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .showcase-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.35);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+        .showcase-dot.active {
+            background: #fff;
+            transform: scale(1.3);
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
+        }
+        /* BUILDING AN ERA Section */
+        .era-section {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            background: url('https://images.pexels.com/photos/32646407/pexels-photo-32646407.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2') center/cover no-repeat;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .era-section::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.58);
+            z-index: 1;
+        }
+        .era-text {
+            position: relative;
+            z-index: 2;
+            font-weight: 100;
+            font-size: 8vw;
+            letter-spacing: 0.42em;
+            color: #fff;
+            text-align: center;
+            text-transform: uppercase;
+        }
+        /* === CONTACT SECTION (END PAGE) === */
+        .contact-page {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-start;
+            padding: 5vh 6vw;
+            background: #000;
+            overflow: hidden;
+        }
+        .contact-info {
+            font-weight: 300;
+            font-size: 1.05vw;
+            line-height: 1.8;
+            letter-spacing: 0.08em;
+            color: rgba(255, 255, 255, 0.78);
+        }
+        .contact-info a {
+            color: rgba(255, 255, 255, 0.78);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .contact-info a:hover {
+            color: #fff;
+        }
+        .social-icons {
+            display: flex;
+            gap: 1.2vw;
+            margin-top: 0.8vh;
+        }
+        .social-icons a {
+            color: rgba(255, 255, 255, 0.65);
+            font-size: 1.2vw;
+            transition: all 0.3s ease;
+        }
+        .social-icons a:hover {
+            color: #fff;
+            transform: translateY(-2px);
+        }
+        .note {
+            margin-top: 1.8vh;
+            font-size: 0.85vw;
+            color: rgba(255, 255, 255, 0.48);
+            line-height: 1.6;
+            max-width: 42vw;
+        }
+        .note a {
+            color: rgba(255, 255, 255, 0.55);
+        }
+        /* Responsive */
+        @media (max-width: 768px) {
+            .about-text, .why-text { font-size: 0.98rem; padding: 0 2.2rem; line-height: 1.8; }
+            .glass-nav { padding: 1.4rem 4vw; }
+            .nav-links { gap: 2rem; }
+            .nav-links a { font-size: 0.78rem; letter-spacing: 0.15em; }
+            .brand-text, .era-text { font-size: 12vw; letter-spacing: 0.32em; }
+            .slide-title { font-size: 7.5vw; letter-spacing: 0.24em; }
+            .showcase-indicator { gap: 8px; padding: 6px 12px; }
+            .contact-info {
+                font-size: 2.2vw;
+                line-height: 2;
+            }
+            .social-icons {
+                gap: 3vw;
+                margin-top: 2vh;
+            }
+            .social-icons a {
+                font-size: 3.5vw;
+            }
+            .note {
+                font-size: 1.8vw;
+                max-width: 80vw;
+                margin-top: 3vh;
+            }
+        }
+        @media (max-width: 480px) {
+            .about-text, .why-text { font-size: 0.92rem; padding: 0 1.8rem; }
+            .nav-links { gap: 1.4rem; }
+            .nav-links a { font-size: 0.72rem; }
+            .brand-text, .era-text { font-size: 14vw; }
+            .slide-title { font-size: 9vw; }
+            .contact-info {
+                font-size: 3vw;
+            }
+            .social-icons a {
+                font-size: 5vw;
+            }
+            .note {
+                font-size: 2.4vw;
+            }
+        }
+    </style>
+</head>
+<body class="font-poppins text-white overflow-x-hidden bg-midnight">
+    <!-- Scroll Snap Wrapper -->
+    <div class="scroll-container">
+        <!-- Glass Navigation -->
+        <nav aria-label="Main navigation" class="glass-nav" id="nav">
+            <div class="nav-logo">BRIK</div>
+            <div class="nav-links">
+                <a href="#hero" aria-current="page">Home</a>
+                <a href="#about">About</a>
+                <a href="#showcase">Showcase</a>
+                <a href="#contact">Contact</a>
+            </div>
+        </nav>
+        <!-- HERO SLIDER -->
+        <section id="hero" class="relative snap-section">
+            <div class="swiper h-full">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide relative slide-frost" data-service="Graphics Design & Advertisement">
+                        <picture>
+                            <source srcset="https://images.pexels.com/photos/6601035/pexels-photo-6601035.jpeg?auto=format&fit=crop&w=1920&q=80" type="image/webp">
+                            <img src="https://images.pexels.com/photos/6601035/pexels-photo-6601035.jpeg?auto=compress&cs=tinysrgb&w=1920"
+                                 alt="Professional graphic design and advertising visuals" class="w-full h-full object-cover" loading="lazy" width="1920" height="1080">
+                        </picture>
+                        <div class="hero-overlay"></div>
+                    </div>
+                    <div class="swiper-slide relative slide-frost" data-service="UI/UX & Web Design">
+                        <picture>
+                            <source srcset="https://images.pexels.com/photos/2693200/pexels-photo-2693200.jpeg?auto=format&fit=crop&w=1920&q=80" type="image/webp">
+                            <img src="https://images.pexels.com/photos/2693200/pexels-photo-2693200.jpeg?auto=compress&cs=tinysrgb&w=1920"
+                                 alt="Modern UI/UX and web design interface" class="w-full h-full object-cover" loading="lazy" width="1920" height="1080">
+                        </picture>
+                        <div class="hero-overlay"></div>
+                    </div>
+                    <div class="swiper-slide relative slide-frost" data-service="Photography & Video Editing">
+                        <picture>
+                            <source srcset="https://images.pexels.com/photos/7693365/pexels-photo-7693365.jpeg?auto=format&fit=crop&w=1920&q=80" type="image/webp">
+                            <img src="https://images.pexels.com/photos/7693365/pexels-photo-7693365.jpeg?auto=compress&cs=tinysrgb&w=1920"
+                                 alt="Cinematic photography and video editing" class="w-full h-full object-cover" loading="lazy" width="1920" height="1080">
+                        </picture>
+                        <div class="hero-overlay"></div>
+                    </div>
+                    <div class="swiper-slide relative slide-frost" data-service="A.I">
+                        <picture>
+                            <source srcset="https://images.pexels.com/photos/8386434/pexels-photo-8386434.jpeg?auto=format&fit=crop&w=1920&q=80" type="image/webp">
+                            <img src="https://images.pexels.com/photos/8386434/pexels-photo-8386434.jpeg?auto=compress&cs=tinysrgb&w=1920"
+                                 alt="AI-powered creative technology" class="w-full h-full object-cover" loading="lazy" width="1920" height="1080">
+                        </picture>
+                        <div class="hero-overlay"></div>
+                    </div>
+                </div>
+                <div class="swiper-pagination bottom-10"></div>
+            </div>
+            <div class="absolute inset-0 flex flex-col items-center justify-center z-20 px-6 text-center">
+                <h1 class="relative text-9xl md:text-[11rem] lg:text-[13rem] xl:text-[15rem] font-thin tracking-[0.45em] mb-4 leading-none">
+                    <span class="relative z-10">BRIK</span>
+                    <span class="absolute inset-0 blur-xl opacity-30 text-white -z-10 scale-110">BRIK</span>
+                </h1>
+                <p class="text-xl md:text-3xl lg:text-4xl font-thin mb-12 max-w-4xl opacity-85 tracking-widest">
+                    Building An Era
+                </p>
+                <button id="dynamic-btn" class="service-btn glass glass-hover px-6 md:px-12 py-4 md:py-5 rounded-full shadow-2xl border border-white/10">
+                    Graphics Design & Advertisement
+                </button>
+            </div>
+        </section>
+        <!-- ABOUT SECTION -->
+        <section id="about" class="about-section snap-section">
+            <p class="about-text">
+                BRIK is a <span class="highlight">creative enterprise</span> blending <span class="highlight">art and technology</span> to craft <span class="highlight">impactful visual experiences</span>.
+                We specialize in <span class="highlight">graphic design</span>, <span class="highlight">advertising</span>, <span class="highlight">UI/UX</span> and <span class="highlight">web design</span>,
+                bringing brands to life through <span class="highlight">seamless digital storytelling</span>.
+                Our team masters <span class="highlight">video editing</span>, <span class="highlight">color grading</span>, <span class="highlight">photography</span>,
+                and <span class="highlight">AI-driven innovation</span> to shape the future of <span class="highlight">creative expression</span>.
+            </p>
+        </section>
+        <!-- WHY BRIK SECTION -->
+        <section id="why" class="why-section snap-section">
+            <p class="why-text">
+                Why BRIK?<br>
+                Because BRIK builds creativity with intelligence — blending design, technology, and AI to craft visuals that connect, inspire, and stand out.
+            </p>
+        </section>
+        <!-- BRAND FINAL PAGE -->
+        <section id="brand" class="brand-page snap-section" style="background-image: url('https://images.pexels.com/photos/31622978/pexels-photo-31622978.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2');">
+            <div class="brand-text">BRIK</div>
+        </section>
+        <!-- SHOWCASE SECTION -->
+        <section id="showcase" class="showcase snap-section">
+            <div class="slides-wrapper">
+                <div class="slides-container" id="showcaseContainer">
+                    <div class="slide active" style="background-image: url('https://images.pexels.com/photos/31556681/pexels-photo-31556681.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2');">
+                        <div class="slide-title">Graphics Design</div>
+                    </div>
+                    <div class="slide" style="background-image: url('https://images.pexels.com/photos/3654216/pexels-photo-3654216.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2');">
+                        <div class="slide-title">Branding</div>
+                    </div>
+                    <div class="slide" style="background-image: url('https://images.pexels.com/photos/1598505/pexels-photo-1598505.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2');">
+                        <div class="slide-title">Advertisement</div>
+                    </div>
+                    <div class="slide" style="background-image: url('https://images.pexels.com/photos/4383298/pexels-photo-4383298.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2');">
+                        <div class="slide-title">Web Design & UI/UX</div>
+                    </div>
+                    <div class="slide" style="background-image: url('https://images.pexels.com/photos/16027333/pexels-photo-16027333.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2');">
+                        <div class="slide-title">Photography</div>
+                    </div>
+                    <div class="slide" style="background-image: url('https://images.pexels.com/photos/11314420/pexels-photo-11314420.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2');">
+                        <div class="slide-title">Video Editing</div>
+                    </div>
+                    <div class="slide" style="background-image: url('https://images.pexels.com/photos/18069238/pexels-photo-18069238.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2');">
+                        <div class="slide-title">AI Generation</div>
+                    </div>
+                </div>
+            </div>
+            <div class="showcase-indicator">
+                <div class="showcase-dot active"></div>
+                <div class="showcase-dot"></div>
+                <div class="showcase-dot"></div>
+                <div class="showcase-dot"></div>
+                <div class="showcase-dot"></div>
+                <div class="showcase-dot"></div>
+                <div class="showcase-dot"></div>
+            </div>
+        </section>
+        <!-- BUILDING AN ERA SECTION -->
+        <section id="era" class="era-section snap-section">
+            <div class="era-text">BUILDING AN ERA</div>
+        </section>
+        <!-- CONTACT SECTION -->
+        <section id="contact" class="contact-page snap-section">
+            <div class="contact-info">
+                email : hello@brik.studio<br>
+                phone: +880 1700 000000<br><br>
+                <div class="social-icons">
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="Dribbble"><i class="fab fa-dribbble"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+                <br>
+                Design by : SHADMAN SHOUROV<br>
+                Behance : <a href="https://www.behance.net/shadmanshourov" target="_blank">behance.net/shadmanshourov</a>
+                <div class="note">
+                    note : all images are derived from pexels.com for non-financial purpose.<br>
+                    all rights reserved to the owners.
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "CreativeWork",
+      "name": "BRIK",
+      "url": "https://brik.studio",
+      "description": "Building An Era — Graphics, UI/UX, Photography, A.I.",
+      "creator": { "@type": "Organization", "name": "BRIK Creative Studio" }
+    }
+    </script>
+
+    <!-- Swiper + Custom JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const swiper = new Swiper('.swiper', {
+          loop: true,
+          autoplay: { delay: 5000, disableOnInteraction: false },
+          pagination: { el: '.swiper-pagination', clickable: true },
+          effect: 'fade',
+          fadeEffect: { crossFade: true },
+          speed: 1600,
+          keyboard: { enabled: true },
+          a11y: { enabled: true },
+          on: {
+            slideChange: function () {
+              const service = this.slides[this.activeIndex].dataset.service;
+              const btn = document.getElementById('dynamic-btn');
+              btn.textContent = service;
+              btn.setAttribute('aria-label', `Explore ${service}`);
+            }
+          }
+        });
+        const initialService = swiper.slides[swiper.activeIndex].dataset.service;
+        const dynamicBtn = document.getElementById('dynamic-btn');
+        dynamicBtn.textContent = initialService;
+        dynamicBtn.setAttribute('aria-label', `Explore ${initialService}`);
+
+        const nav = document.getElementById('nav');
+        window.addEventListener('scroll', () => {
+          nav.classList.toggle('scrolled', window.scrollY > 50);
+        });
+
+        document.querySelectorAll('.nav-links a').forEach(link => {
+          link.addEventListener('click', e => {
+            e.preventDefault();
+            const target = document.querySelector(link.getAttribute('href'));
+            target.scrollIntoView({ behavior: 'smooth' });
+          });
+        });
+
+        const sections = document.querySelectorAll('.snap-section');
+        const navLinks = document.querySelectorAll('.nav-links a');
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              navLinks.forEach(link => {
+                const isActive = link.getAttribute('href') === `#${entry.target.id}`;
+                if (isActive) {
+                  link.setAttribute('aria-current', 'page');
+                } else {
+                  link.removeAttribute('aria-current');
+                }
+              });
+            }
+          });
+        }, { threshold: 0.7 });
+        sections.forEach(sec => observer.observe(sec));
+
+        const container = document.getElementById('showcaseContainer');
+        const slides = document.querySelectorAll('#showcase .slide');
+        const dots = document.querySelectorAll('.showcase-dot');
+        let current = 0;
+        const total = slides.length;
+        let isTransitioning = false;
+
+        function updateActive(index) {
+          slides.forEach((s, i) => s.classList.toggle('active', i === index));
+          dots.forEach((d, i) => d.classList.toggle('active', i === index));
+        }
+
+        function goToSlide(n) {
+          if (isTransitioning) return;
+          isTransitioning = true;
+          current = (n + total) % total;
+          container.style.transform = `translateX(-${current * 100}vw)`;
+          container.addEventListener('transitionend', function handler() {
+            updateActive(current);
+            isTransitioning = false;
+            container.removeEventListener('transitionend', handler);
+          });
+        }
+
+        dots.forEach((dot, i) => {
+          dot.addEventListener('click', () => goToSlide(i));
+        });
+
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'ArrowLeft') goToSlide(current - 1);
+          if (e.key === 'ArrowRight') goToSlide(current + 1);
+        });
+
+        let touchStartX = 0;
+        const showcase = document.getElementById('showcase');
+        showcase.addEventListener('touchstart', (e) => {
+          touchStartX = e.touches[0].clientX;
+        }, { passive: true });
+
+        showcase.addEventListener('touchend', (e) => {
+          const touchEndX = e.changedTouches[0].clientX;
+          const diff = touchStartX - touchEndX;
+          if (Math.abs(diff) > 60) {
+            if (diff > 0) goToSlide(current + 1);
+            else goToSlide(current - 1);
+          }
+        }, { passive: true });
+      });
+    </script>
+</body>
+</html>
